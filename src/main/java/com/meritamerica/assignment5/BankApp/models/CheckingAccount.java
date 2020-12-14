@@ -1,47 +1,21 @@
 package com.meritamerica.assignment5.BankApp.models;
 
-import javax.validation.constraints.NotNull;
+import javax.persistence.DiscriminatorValue;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 
-public class CheckingAccount{
-	static int nextId =1;	
-	long accountNumber;
-	@NotNull(message="Balance not found")
-	double balance;
-	@NotNull(message="Interest rate not found")
-	double interestRate;
-	@NotNull(message="Date not found")
-	long openedOn ;
+@Entity
+@DiscriminatorValue("CHECKING")
+public class CheckingAccount extends BankAccount{
+	
+	private static final double INTEREST_RATE = 0.0001;	
 	
 	public CheckingAccount() {
-		this.balance = 0;
-		this.interestRate = .0001;
-		this.openedOn = 0;
-		this.accountNumber = nextId++;
+		
+	}
+	public CheckingAccount (double balance) {
+		super();
 	}
 	
-	public long getAccountNumber() {
-		return accountNumber;
-	}
-	public void setAccountNumber(long accountNumber) {
-		this.accountNumber = accountNumber;
-	}
-	public double getBalance() {
-		return balance;
-	}
-	public void setBalance(double balance) {
-		this.balance = balance;
-	}
-	public double getInterestRate() {
-		return interestRate;
-	}
-	public void setInterestRate(double interestRate) {
-		this.interestRate = interestRate;
-	}
-	public long getopenedOn() {
-		return openedOn;
-	}
-	public void setopenedOn(long openedOn) {
-		this.openedOn = openedOn;
-	}
-
+		
 }
