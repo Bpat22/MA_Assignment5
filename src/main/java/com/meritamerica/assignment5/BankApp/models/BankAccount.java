@@ -28,7 +28,6 @@ import org.springframework.expression.ParseException;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
-//@MappedSuperclass
 @Inheritance(strategy =  InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "ACCOUNT_TYPE", discriminatorType = DiscriminatorType.STRING)
 @DiscriminatorOptions(force = true)
@@ -39,28 +38,24 @@ public abstract class BankAccount {
 	static int nextID = 0;
 	
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
-	@Column
-	//private Long accountNumber;
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "bank_Account_generator")
+	@Column(name = "ACCOUNT_ID")
 	private int accountID;
+	//private int accountNumber;
 	
 	@ManyToOne
 	@JoinColumn(name = "ID", nullable = false)
 	@JsonIgnore
 	public AccountHolder accountHolder;
 	
-	@NotNull(message="Balance not found")
 	@Min(value = 0, message = "Balance must be greater than 0")
 	private double balance;
 	
-	@NotNull(message="Interest rate not found")
 	//@DecimalMin(value = "0.0", inclusive = false, message = "Interest Rate must be greater than 0")
 	//@DecimalMax(value = "1.0", inclusive = false, message = "Interest Rate must be less than 1" )
 	@Column(name = "INTEREST_RATE")
 	private double interestRate;
 	
-	@NotNull(message="Date not found")
-	@Column(name = "OPENED_ON")
 	private long openedOn ;
 			
 	public BankAccount() {
@@ -69,12 +64,10 @@ public abstract class BankAccount {
 	
 	public AccountHolder getAccountHolder() {
 		return accountHolder;
-	}
-	
+	}	
 	public void setAccountHolder(AccountHolder accountHolder) {
 		this.accountHolder = accountHolder;
-	}
-	
+	}	
 	
 	public long getAccountNumber() {
 		return this.accountID;

@@ -6,7 +6,6 @@ import javax.persistence.Table;
 
 @Entity
 @DiscriminatorValue("SAVINGS")
-
 public class SavingsAccount extends BankAccount{
 	
 	private static final double INTEREST_RATE = 0.01;	

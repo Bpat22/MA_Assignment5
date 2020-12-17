@@ -19,25 +19,25 @@ import com.meritamerica.assignment5.BankApp.exceptions.InterestTermLimitExceptio
 import com.meritamerica.assignment5.BankApp.models.CDOffering;
 import com.meritamerica.assignment5.BankApp.models.MeritBank;
 
-
 @RestController
 public class CDOfferingController {
 
 	@Autowired
-	//CDOfferingService service;
-	AccountHolderService service;
+	CDOfferingService service;
+	//AccountHolderService service;
+	
 	List<CDOffering> cdOfferings = new ArrayList<CDOffering>();
 	
 	@ResponseStatus(HttpStatus.CREATED)
 	@PostMapping(value = "/CDOfferings")
 	public CDOffering postCDOffering(@Valid @RequestBody CDOffering cdOffering) {
-		MeritBank.addCDOffering(cdOffering);
-		return service.postCDOffering(cdOffering);
+		service.postCDOffering(cdOffering);
+		return cdOffering;
 	}
 	
 	@GetMapping(value ="/CDOfferings")
 	@ResponseStatus(HttpStatus.OK)
-	public List<CDOffering> getCDOfferings(){
+	public List<CDOffering> getCDOffering(){
 		return service.getCDOfferings();
 	}
 	

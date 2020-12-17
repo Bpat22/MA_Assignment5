@@ -26,7 +26,6 @@ import com.meritamerica.assignment5.BankApp.models.CheckingAccount;
 import com.meritamerica.assignment5.BankApp.models.MeritBank;
 import com.meritamerica.assignment5.BankApp.models.SavingsAccount;
 
-
 @RestController
 public class AccountHolderController {
 	
@@ -34,18 +33,15 @@ public class AccountHolderController {
 	AccountHolderService service;
 
 	List<AccountHolder> accountHolders = new ArrayList<AccountHolder>();
-	//List<CDOffering> cdOfferings = new ArrayList<CDOffering>();
 	List<String> strTemp = new ArrayList<String>();
 
 	@ResponseStatus(HttpStatus.CREATED)	
 	@PostMapping(value = "/AccountHolders")
 	public AccountHolder postAccountHolder(@Valid @RequestBody AccountHolder accountHolder) {
 		service.postAccountHolder(accountHolder);
-		//MeritBank.addAccountHolder(accountHolder);
 		return accountHolder;		
 	}	
 	
-	//@ResponseStatus(HttpStatus.ACCEPTED)
 	@ResponseStatus(HttpStatus.OK)
 	@GetMapping(value ="/AccountHolders")
 	public List<AccountHolder> getAccountHolders(){
@@ -65,14 +61,11 @@ public class AccountHolderController {
 	@ResponseStatus(HttpStatus.CREATED)
 	@PostMapping(value="AccountHolders/{id}/CheckingAccounts")
 	public CheckingAccount postCheckingAccount(@Valid @RequestBody CheckingAccount checkingAccount, @PathVariable int id) throws NotFoundException, ExceedsCombinedBalanceLimitException  {
+		AccountHolder accountHolder = service.getAccountHolderById(id);
 		if(service.getAccountHolderById(id) == null){
-		//if(service.getAccountHolderById(id) == null) {
-			throw new NotFoundException("account id not found");
+			throw new NotFoundException("Account id not found");
 		}
-		//if(service.getAccountHolders().get(id-1).getCombinedBalance() + checkingAccount.getBalance() > 250000) {
-		//	throw new ExceedsCombinedBalanceLimitException("Balance exceeds limit");
-		//}
-		service.getAccountHolders().get(id-1).addCheckingAccount(checkingAccount);
+		service.postCheckingAccount(accountHolder, checkingAccount);
 		return checkingAccount;
 	}	
 	
@@ -82,68 +75,50 @@ public class AccountHolderController {
 		if(service.getAccountHolderById(id) == null) {
 			throw new NotFoundException("Checking account id not found");
 		}
-		return service.getAccountHolders().get(id-1).getCheckingAccounts();
+		return service.getAccountHolders().get(id).getCheckingAccounts();
 	}
 	
 //*****Savings Account
 	@ResponseStatus(HttpStatus.CREATED)
 	@PostMapping(value="AccountHolders/{id}/SavingsAccounts")
 	public SavingsAccount postSavingsAccount(@Valid @RequestBody SavingsAccount savingsAccount, @PathVariable int id) throws NotFoundException, ExceedsCombinedBalanceLimitException {
-		if(id > accountHolders.size()) {
-			throw new NotFoundException("Savings account id not found");
+		AccountHolder accountHolder = service.getAccountHolderById(id);
+		if(service.getAccountHolderById(id) == null){
+			throw new NotFoundException("Account id not found");
 		}
-		if(service.getAccountHolders().get(id-1).getCombinedBalance() + savingsAccount.getBalance() > 250000) {
-			throw new ExceedsCombinedBalanceLimitException("Balance exceeds limit");
-		}
-		service.getAccountHolders().get(id-1).addSavingsAcccount(savingsAccount);
+		service.postSavingsAccount(accountHolder, savingsAccount);
 		return savingsAccount;
 	}
 	
 	@ResponseStatus(HttpStatus.OK)
 	@GetMapping(value="AccountHolders/{id}/SavingsAccounts")
 	public List<SavingsAccount> getSavingsAccountById(@PathVariable int id) throws NotFoundException {
-		if(id > accountHolders.size()) {
-			throw new NotFoundException("Savings accoint id not found");
+		if(service.getAccountHolderById(id) == null){
+			throw new NotFoundException("Account id not found");
 		}
-		return service.getAccountHolders().get(id-1).getSavingsAccounts();	
+		return service.getAccountHolders().get(id).getSavingsAccounts();	
 	}
 
-//*****CDAccount
-	
+//*****CDAccount	
 	@ResponseStatus(HttpStatus.CREATED)
 	@PostMapping(value="AccountHolders/{id}/CDAccounts")
 	public CDAccount postCDAccount(@Valid @RequestBody CDAccount cdAccount, @PathVariable int id) throws InterestTermLimitException, NotFoundException, ExceedsCombinedBalanceLimitException {
-		if(id > accountHolders.size()) {
-			throw new NotFoundException("CD account id not found");
+		AccountHolder accountHolder = service.getAccountHolderById(id);
+		//CDOffering cdOffering = service.get
+			if(service.getAccountHolderById(id) == null){
+			throw new NotFoundException("Account id not found");
 		}
-		if(service.getAccountHolders().get(id-1).getCombinedBalance() + cdAccount.getBalance() > 250000) {
-			throw new ExceedsCombinedBalanceLimitException("Balance exceeds limit");
-		}
-		service.getAccountHolders().get(id-1).addCDAcccount(cdAccount);
+		service.postCDAccount(accountHolder, cdAccount);
 		return cdAccount;
 	}
 	
 	@ResponseStatus(HttpStatus.OK)
 	@GetMapping(value="AccountHolders/{id}/CDAccounts")
 	public List<CDAccount> getCDAccountById(@PathVariable int id) throws NotFoundException {
-		if(id > accountHolders.size()){
-			throw new NotFoundException("CD account id not found");
+		if(service.getAccountHolderById(id) == null){
+			throw new NotFoundException("Account id not found");
 		}
-		return service.getAccountHolders().get(id-1).getCDAccounts();	
+		return service.getAccountHolders().get(id).getCdAccounts();	
 	}
-/*	
-//*****CD Offering
-	
-	@ResponseStatus(HttpStatus.CREATED)
-	@PostMapping(value = "/CDOfferings")
-	public CDOffering postCDOffering(@Valid @RequestBody CDOffering cdOffering) throws InterestTermLimitException {
-		MeritBank.addCDOffering(cdOffering);
-		return cdOffering;
-	}
-	
-	@GetMapping(value ="/CDOffering")
-	public List<CDOffering> getCDOfferings(){
-		return MeritBank.getCDOfferings();
-	}*/
 	
 }
